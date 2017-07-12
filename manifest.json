@@ -28,7 +28,8 @@
   "permissions": [
     "contextMenus",
     "storage",
-    "tabs"
+    "tabs",
+    "bookmarks"
   ]
 
 }

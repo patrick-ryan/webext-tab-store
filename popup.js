@@ -1,5 +1,7 @@
 // resources: chrome.tabs, chrome.storage
 
+// TODO: add export functionality
+
 // retrieve app data
 chrome.storage.sync.get({'tabs': {}}, function(tabsMap) {
     for (var guid in tabsMap['tabs']) {
@@ -11,7 +13,6 @@ chrome.storage.sync.get({'tabs': {}}, function(tabsMap) {
             var groupItem = renderGroup(guid, groupsMap['groups'][guid]);
             groupItem.appendTo('#groupList');
         }
-
         initialize();
     });
 });
@@ -58,11 +59,43 @@ function renderGroup(guid, group) {
 function initialize() {
     // initialize semantic ui
     $('.dropdown').dropdown();
-    $('.tabular.menu > .customTab.item').tab();
+    $('.tabular.menu > .customTab').tab();
     $('.accordion').accordion({ selector: {trigger: '.customDropdown'} });
     $('.checkbox').checkbox();
 
     // initialize event listeners
+    // TODO: convert link into gmail-like checkbox
+    $('#tabList .customSelectAll').click(function() {
+        if ($(this).text() == 'select all') {
+            $('#tabList').find('.checkbox').each(function() {
+                $(this).checkbox('set checked');
+            });
+            $(this).text('unselect all');
+        }
+        else {
+            $('#tabList').find('.checkbox').each(function() {
+                $(this).checkbox('set unchecked');
+            });
+            $(this).text('select all');
+        }
+    });
+
+    // TODO: convert link into gmail-like checkbox
+    $('#groupList .customSelectAll').click(function() {
+        if ($(this).text() == 'select all') {
+            $(this).closest('.item').find('.checkbox').each(function() {
+                $(this).checkbox('set checked');
+            });
+            $(this).text('unselect all');
+        }
+        else {
+            $(this).closest('.item').find('.checkbox').each(function() {
+                $(this).checkbox('set unchecked');
+            });
+            $(this).text('select all');
+        }
+    });
+
     $('#save').click(function() {
         $('#tabStore').dimmer('show');
         var tabsToSave = getSelectedTabs();
@@ -90,6 +123,7 @@ function initialize() {
         });
     });
 
+    // TODO: don't create existing tab?
     $('#open').click(function() {
         for (let tabMeta of getSelectedTabs()) {
             chrome.tabs.create({'url': tabMeta['tab']['tabUrl']});
@@ -102,6 +136,38 @@ function initialize() {
         chrome.windows.create({'url': tabUrlsToOpen});
     });
 
+    $('#bookmark').click(function() {
+        var policyToNodeId = {
+            'Bookmarks Bar': '1',
+            'Other Bookmarks': '2'
+        };
+        chrome.bookmarks.getTree(function(bookmarkTree) {
+            if (bookmarkTree.length > 0) {
+                for (let treeNode of bookmarkTree[0].children) {
+                    if (treeNode.id == policyToNodeId['Bookmarks Bar']) {
+                        var found = false;
+                        for (let bookmarkBarTreeNode of treeNode.children) {
+                            if (bookmarkBarTreeNode.title == 'TabStore') {
+                                addBookmarks(bookmarkBarTreeNode.id);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            chrome.bookmarks.create({
+                                'parentId': treeNode.id,
+                                'title': 'TabStore'
+                            }, function(extensionFolder) {
+                                addBookmarks(extensionFolder.id);
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    // TODO: add undo functionality
     $('#tabList .customTabDelete').click(function() {
         var tabItem = $(this).closest('.item');
         var guid = tabItem.data('meta')['guid'];
@@ -116,7 +182,7 @@ function initialize() {
         tabItem.remove();
     });
 
-    $('#tabList .customTabCopy').click(function() {
+    $('.customTabCopy').click(function() {
         var tabItem = $(this).closest('.item');
         var $temp = $('<input>');
         $('body').append($temp);
@@ -126,6 +192,7 @@ function initialize() {
         $temp.remove();
     });
 
+    // TODO: add undo functionality
     $('#groupList .customGroupDelete').click(function() {
         var groupItem = $(this).closest('.item');
         var guid = groupItem.data('meta')['guid'];
@@ -140,6 +207,7 @@ function initialize() {
         groupItem.remove();
     });
 
+    // TODO: add undo functionality
     $('#groupList .customTabDelete').click(function() {
         var tabItem = $(this).closest('.item');
         var tabGuid = tabItem.data('meta')['guid'];
@@ -157,9 +225,20 @@ function initialize() {
     });
 }
 
+function addBookmarks(extensionFolderId) {
+    for (let tabMeta of getSelectedTabs()) {
+        chrome.bookmarks.create({
+            'parentId': extensionFolderId,
+            'title': tabMeta['tab']['tabTitle'],
+            'url': tabMeta['tab']['tabUrl']
+        });
+    }
+}
+
 function getSelectedTabs() {
     var selectedTabs = [];
-    $('#tabList').find('.checkbox').each(function() {
+    var itemListId = $('#tabsTab').hasClass('active') ? '#tabList' : '#groupList';
+    $(itemListId).find('.checkbox').each(function() {
         if( $(this).checkbox('is checked') ) {
             var tabMeta = $(this).closest('.item').data('meta');
             selectedTabs.push(tabMeta);
