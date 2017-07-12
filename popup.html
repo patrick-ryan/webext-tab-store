@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tab Store</title>
+  <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+  <script src="jquery/jquery-3.1.1.min.js"></script>
+  <script src="semantic/dist/semantic.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./popup.css">
+</head>
+<body style="width: 500px;">
+  <div id="tabStore">
+    <div class="ui top attached tabular menu">
+      <div class="ui dropdown icon item">
+        <i class="wrench icon"></i>
+        <div class="menu">
+          <div id="bookmark" class="item">Bookmark</div>
+          <div id="open" class="item">Open</div>
+          <div id="openNewWindow" class="item">Open in new window</div>
+          <div id="save" class="item">Save as group</div>
+          <div id="saveOpenTabs" class="item">Save open tabs as group</div>
+        </div>
+      </div>
+      <a class="customTab item active" data-tab="tabs">Tabs</a>
+      <a class="customTab item" data-tab="groups">Groups</a>
+      <div class="right menu">
+        <div class="ui right aligned category search item">
+          <div class="ui transparent icon input">
+            <input class="prompt" type="text" placeholder="Search tabs...">
+            <i class="search link icon"></i>
+          </div>
+          <div class="results"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment active" data-tab="tabs">
+      <div id="tabList" class="ui relaxed divided list">
+        <div>
+          <a class="customSelectAll">select all</a>
+        </div>
+        <!-- tab template -->
+        <div id="tabItemTemplate" class="item" style="display: none;">
+          <div class="ui grid">
+            <div class="twelve wide column">
+              <div class="ui middle checkbox" style="width: 100%;">
+                <input type="checkbox">
+                <label>
+                  <div class="content">
+                    <a id="tabItemHeader" class="header" href=""></a>
+                    <div id="tabItemDescription" class="description"></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="four wide column">
+              <div class="ui icon buttons">
+                <button class="customTabCopy ui button"><i class="ui copy icon"></i></button>
+                <button class="customTabDelete ui red button"><i class="ui remove icon"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- list of tabs -->
+
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="groups">
+      <div id="groupList" class="ui relaxed list">
+        <!-- group template -->
+        <div id="groupItemTemplate" class="item" style="display: none;">
+          <div class="ui accordion">
+            <div class="ui title">
+              <div class="ui grid">
+                <div class="twelve wide column">
+                  <div class="customDropdown">
+                    <i class="ui dropdown icon"></i>
+                    <span id="groupItemHeader"></span>
+                  </div>
+                  <div>
+                    <a class="customSelectAll">select all</a>
+                  </div>
+                </div>
+                <div class="four wide column">
+                  <div class="ui icon buttons">
+                    <button class="ui button"><i class="ui copy icon"></i></button>
+                    <button class="customGroupDelete ui red button"><i class="ui remove icon"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ui content">
+              <div id="groupTabList" class="ui relaxed divided list" style="padding-left: 25px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- list of groups -->
+
+      </div>
+    </div>
+    
+    <div id="saveForm" class="ui dimmer">
+      <div class="content">
+        <div class="center">
+          <div class="ui segment">
+            <div class="ui top attached label">Enter a group name</div>
+            <div class="ui input">
+              <input id="groupName" type="text" placeholder="Group name...">
+              <button id="saveButton" class="ui button">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="./popup.js"></script>
+</body>
+</html>

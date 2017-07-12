@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tab Store</title>
+  <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+  <script src="jquery/jquery-3.1.1.min.js"></script>
+  <script src="semantic/dist/semantic.min.js"></script>
+  <style>
+    .ui.middle.checkbox label:before, .ui.middle.checkbox label:after {
+      top: 10px;
+    }
+    .customSelectWindow {
+      font-size: 14px;
+      padding-left: 50px;
+    }
+    .ui.title {
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body style="width: 500px; height: 700px;">
+  <!-- <h1>test</h1> -->
+  <!-- <div id="tabStore" class="html ui top attached segment"> -->
+  <div id="tabStore">
+    <div class="ui top attached tabular menu">
+      <div class="ui dropdown icon item">
+        <i class="wrench icon"></i>
+        <div class="menu">
+          <!-- <div class="item">
+            <i class="dropdown icon"></i>
+            <span class="text">New</span>
+            <div class="menu">
+              <div class="item">Document</div>
+              <div class="item">Image</div>
+            </div>
+          </div> -->
+          <div class="item">Bookmark</div>
+          <div class="item">Open</div>
+          <div class="item">Open in new window</div>
+          <div class="item">Save as window</div>
+          <div class="item">Save open tabs as window</div>
+          <!-- <div class="divider"></div>
+          <div class="header">Export</div>
+          <div class="item">Share...</div> -->
+        </div>
+      </div>
+      <a class="customTab item active" data-tab="tab-name">Tabs</a>
+      <a class="customTab item" data-tab="tab-name2">Groups</a>
+      <div class="right menu">
+        <div class="ui right aligned category search item">
+          <div class="ui transparent icon input">
+            <input class="prompt" type="text" placeholder="Search animals...">
+            <i class="search link icon"></i>
+          </div>
+          <div class="results"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment active" data-tab="tab-name">
+      <div class="ui relaxed divided list">
+
+        <div class="item">
+          <div class="ui grid">
+            <div class="twelve wide column">
+              <div class="ui middle checkbox">
+                <input type="checkbox">
+                <label>
+                  <div class="content">
+                    <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                    <div class="description">hackvirginia.org</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="four wide column">
+              <div class="ui icon buttons">
+                <button class="ui button"><i class="ui copy icon"></i></button>
+                <button class="ui red button"><i class="ui remove icon"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="ui middle checkbox">
+            <input type="checkbox">
+            <label>
+              <div class="content">
+                <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                <div class="description">hackvirginia.org</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="item">
+          <div class="ui middle checkbox">
+            <input type="checkbox">
+            <label>
+              <div class="content">
+                <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                <div class="description">hackvirginia.org</div>
+              </div>
+            </label>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="tab-name2">
+      <div class="ui relaxed list">
+
+        <div class="item">
+          <div class="ui accordion">
+            <div class="ui active title">
+              <div class="customDropdown">
+                <i class="ui dropdown icon"></i>
+                <span>Test window</span>
+              </div>
+              <div>
+                <a class="customSelectWindow">select all</a>
+              </div>
+            </div>
+            <div class="ui active content">
+              <div class="ui relaxed divided list" style="padding-left: 25px;">
+
+                <div class="item">
+                  <div class="ui middle checkbox">
+                    <input type="checkbox">
+                    <label>
+                      <div class="content">
+                        <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                        <div class="description">hackvirginia.org</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="ui middle checkbox">
+                    <input type="checkbox">
+                    <label>
+                      <div class="content">
+                        <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                        <div class="description">hackvirginia.org</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="ui middle checkbox">
+                    <input type="checkbox">
+                    <label>
+                      <div class="content">
+                        <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                        <div class="description">hackvirginia.org</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="ui accordion">
+            <div class="ui title">
+              <div class="customDropdown">
+                <i class="ui dropdown icon"></i>
+                <span>Test window</span>
+              </div>
+              <div>
+                <a class="customSelectWindow">select all</a>
+              </div>
+            </div>
+            <div class="ui content">
+              <div class="ui relaxed divided list" style="padding-left: 25px;">
+
+                <div class="item">
+                  <div class="ui middle checkbox">
+                    <input type="checkbox">
+                    <label>
+                      <div class="content">
+                        <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                        <div class="description">hackvirginia.org</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="ui middle checkbox">
+                    <input type="checkbox">
+                    <label>
+                      <div class="content">
+                        <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                        <div class="description">hackvirginia.org</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="ui middle checkbox">
+                    <input type="checkbox">
+                    <label>
+                      <div class="content">
+                        <a class="header" href="http://hackvirginia.org">HackVirginia</a>
+                        <div class="description">hackvirginia.org</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <script src="./popup.js"></script>
+</body>
+</html>
