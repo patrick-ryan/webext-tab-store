@@ -34,11 +34,9 @@
         </div>
       </div>
     </div>
-    <div class="ui bottom attached tab segment active" data-tab="tabs">
+    <div id="tabsTabSegment" class="ui bottom attached tab segment active" data-tab="tabs">
       <div id="tabList" class="ui relaxed divided list">
-        <div>
-          <a class="customSelectAll">select all</a>
-        </div>
+        <a class="customSelectAll">select all</a>
         <!-- tab template -->
         <div id="tabItemTemplate" class="item" style="display: none;">
           <div class="ui grid">
@@ -65,7 +63,7 @@
 
       </div>
     </div>
-    <div class="ui bottom attached tab segment" data-tab="groups">
+    <div id="groupsTabSegment" class="ui bottom attached tab segment" data-tab="groups">
       <div id="groupList" class="ui relaxed list">
         <!-- group template -->
         <div id="groupItemTemplate" class="item" style="display: none;">
@@ -77,9 +75,6 @@
                     <i class="ui dropdown icon"></i>
                     <span id="groupItemHeader"></span>
                   </div>
-                  <div>
-                    <a class="customSelectAll">select all</a>
-                  </div>
                 </div>
                 <div class="four wide column">
                   <div class="ui icon buttons">
@@ -90,7 +85,9 @@
               </div>
             </div>
             <div class="ui content">
-              <div id="groupTabList" class="ui relaxed divided list" style="padding-left: 25px;"></div>
+              <div id="groupTabList" class="ui relaxed divided list" style="padding-left: 25px;">
+                <a class="customSelectAll">select all</a>
+              </div>
             </div>
           </div>
         </div>

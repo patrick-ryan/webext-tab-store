@@ -21,12 +21,18 @@ function renderTab(guid, tab) {
     var item = $('#tabItemTemplate').clone(true);
     item.removeAttr('id');
     item.removeAttr('style');
+    item.addClass('tabItem');
     item.data('meta', {'guid': guid, 'tab': tab});
 
     var header = item.find('#tabItemHeader');
     header.removeAttr('id');
     header.attr('href', tab['tabUrl']);
     header.text(tab['tabTitle']);
+    header.click(function(event) {
+        event.preventDefault();  // disable default link behavior
+        chrome.tabs.create({'active': false, 'url': tab['tabUrl']});  // open in new tab
+        event.stopPropagation();  // disable parent handling, e.g. checkbox selection
+    });
     
     var description = item.find('#tabItemDescription');
     description.removeAttr('id');
@@ -65,31 +71,15 @@ function initialize() {
 
     // initialize event listeners
     // TODO: convert link into gmail-like checkbox
-    $('#tabList .customSelectAll').click(function() {
+    $('#tabStore .customSelectAll').click(function() {
         if ($(this).text() == 'select all') {
-            $('#tabList').find('.checkbox').each(function() {
+            $(this).siblings('.tabItem').find('.checkbox').each(function() {
                 $(this).checkbox('set checked');
             });
             $(this).text('unselect all');
         }
         else {
-            $('#tabList').find('.checkbox').each(function() {
-                $(this).checkbox('set unchecked');
-            });
-            $(this).text('select all');
-        }
-    });
-
-    // TODO: convert link into gmail-like checkbox
-    $('#groupList .customSelectAll').click(function() {
-        if ($(this).text() == 'select all') {
-            $(this).closest('.item').find('.checkbox').each(function() {
-                $(this).checkbox('set checked');
-            });
-            $(this).text('unselect all');
-        }
-        else {
-            $(this).closest('.item').find('.checkbox').each(function() {
+            $(this).siblings('.tabItem').find('.checkbox').each(function() {
                 $(this).checkbox('set unchecked');
             });
             $(this).text('select all');
@@ -126,14 +116,14 @@ function initialize() {
     // TODO: don't create existing tab?
     $('#open').click(function() {
         for (let tabMeta of getSelectedTabs()) {
-            chrome.tabs.create({'url': tabMeta['tab']['tabUrl']});
+            chrome.tabs.create({'active': false, 'url': tabMeta['tab']['tabUrl']});
         }
     });
 
     $('#openNewWindow').click(function() {
         var getTabUrl = function(tabMeta) { return tabMeta['tab']['tabUrl']; };
         var tabUrlsToOpen = getSelectedTabs().map(getTabUrl);
-        chrome.windows.create({'url': tabUrlsToOpen});
+        chrome.windows.create({'focused': false, 'url': tabUrlsToOpen});
     });
 
     $('#bookmark').click(function() {
@@ -225,6 +215,13 @@ function initialize() {
     });
 }
 
+function activateMenuTab(tabId) {
+    $('.tabular.menu > .customTab.active').removeClass('active');
+    $(tabId).addClass('active');
+    $('#tabStore > .segment.active').removeClass('active');
+    $(tabId + "Segment").addClass('active');
+}
+
 function addBookmarks(extensionFolderId) {
     for (let tabMeta of getSelectedTabs()) {
         chrome.bookmarks.create({
@@ -259,10 +256,16 @@ function saveHandler() {
         groupObject['tabs'][tabMeta['guid']] = tabMeta['tab'];
     }
     chrome.storage.sync.get({'groups': {}}, function(groupsMap) {
-        groupsMap['groups'][generateUUID()] = groupObject;
+        var guid = generateUUID();
+        groupsMap['groups'][guid] = groupObject;
         chrome.storage.sync.set(groupsMap, function() {
             if (chrome.runtime.lastError) {
                 console.log("Could not save tabs. Error: " + chrome.runtime.lastError);
+            }
+            else {
+                var groupItem = renderGroup(guid, groupObject);
+                groupItem.appendTo('#groupList');
+                activateMenuTab('#groupsTab');
             }
         });
     });
