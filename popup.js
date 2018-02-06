@@ -2,6 +2,13 @@
 
 // TODO: add export functionality
 
+chrome.runtime.onInstalled.addListener(function() {
+    var groupName = "Open Tabs (TabStore)";
+    var tabsToSave = getOpenTabs();
+    saveGroup(groupName, tabsToSave);
+    activateMenuTab('#groupsTab');
+});
+
 // retrieve app data
 chrome.storage.sync.get({'tabs': {}}, function(tabsMap) {
     for (var guid in tabsMap['tabs']) {
@@ -88,29 +95,24 @@ function initialize() {
 
     $('#save').click(function() {
         $('#tabStore').dimmer('show');
+        var groupName = $('#saveForm').find('#groupName').val();
         var tabsToSave = getSelectedTabs();
         $('#saveForm').off('click', '#saveButton');
-        $('#saveForm').on('click', '#saveButton', $.proxy(saveHandler, null, tabsToSave));
+        $('#saveForm').on('click', '#saveButton', $.proxy(saveGroup, null, groupName, tabsToSave));
+        $('#saveForm').find('#groupName').val('');
+        $('#tabStore').dimmer('hide');
+        activateMenuTab('#groupsTab');
     });
 
     $('#saveOpenTabs').click(function() {
         $('#tabStore').dimmer('show');
-        chrome.windows.getCurrent(function(currentWindow) {
-            chrome.tabs.query({'windowId': currentWindow.id}, function(openTabs) {
-                var tabsToSave = [];
-                for (let tab of openTabs) {
-                    tabsToSave.push({
-                        'guid': generateUUID(),
-                        'tab': {
-                            'tabTitle': tab.title,
-                            'tabUrl': tab.url
-                        }
-                    });
-                }
-                $('#saveForm').off('click', '#saveButton');
-                $('#saveForm').on('click', '#saveButton', $.proxy(saveHandler, null, tabsToSave));
-            });
-        });
+        var groupName = $('#saveForm').find('#groupName').val();
+        var tabsToSave = getOpenTabs();
+        $('#saveForm').off('click', '#saveButton');
+        $('#saveForm').on('click', '#saveButton', $.proxy(saveGroup, null, groupName, tabsToSave));
+        $('#saveForm').find('#groupName').val('');
+        $('#tabStore').dimmer('hide');
+        activateMenuTab('#groupsTab');
     });
 
     // TODO: don't create existing tab?
@@ -244,14 +246,11 @@ function getSelectedTabs() {
     return selectedTabs;
 }
 
-function saveHandler() {
-    var tabsToSave = arguments[0];
+function saveGroup(groupName, tabsToSave) {
     var groupObject = {
-        'groupName': $('#saveForm').find('#groupName').val(), 
+        'groupName': groupName, 
         'tabs': {}
     };
-    $('#tabStore').dimmer('hide');
-    $('#saveForm').find('#groupName').val('');
     for (let tabMeta of tabsToSave) {
         groupObject['tabs'][tabMeta['guid']] = tabMeta['tab'];
     }
@@ -265,8 +264,25 @@ function saveHandler() {
             else {
                 var groupItem = renderGroup(guid, groupObject);
                 groupItem.appendTo('#groupList');
-                activateMenuTab('#groupsTab');
             }
+        });
+    });
+}
+
+function getOpenTabs() {
+    chrome.windows.getCurrent(function(currentWindow) {
+        chrome.tabs.query({'windowId': currentWindow.id}, function(openTabs) {
+            var tabsToSave = [];
+            for (let tab of openTabs) {
+                tabsToSave.push({
+                    'guid': generateUUID(),
+                    'tab': {
+                        'tabTitle': tab.title,
+                        'tabUrl': tab.url
+                    }
+                });
+            }
+            return tabsToSave;
         });
     });
 }
